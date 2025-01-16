@@ -33,8 +33,9 @@ function App() {
             <button
               key={recipe.id}
               onClick={() => setSelectedRecipe(recipe)}
-              className="w-full p-6 border rounded text-left transition-all duration-200
-                       hover:border-orange-200 hover:shadow-sm group"
+              className={`w-full p-6 border rounded text-left transition-all duration-200
+                       hover:border-orange-200 hover:shadow-sm group
+                       ${recipe.favorite ? 'border-l-4 border-l-orange-200' : ''}`}
             >
               <div className="flex justify-between items-center">
                 <span className="font-medium text-xl group-hover:text-orange-900">

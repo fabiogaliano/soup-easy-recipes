@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
-import { ChevronLeft, Plus, Minus, ChevronDown } from 'lucide-react';
-
-
+import { Plus, Minus, ChevronDown } from 'lucide-react';
 
 const SectionHeader = ({ title, isOpen, onToggle }) => (
   <button
@@ -20,34 +18,46 @@ const Recipe = ({ recipe }) => {
   const [showIngredients, setShowIngredients] = useState(true);
   const [showOptional, setShowOptional] = useState(true);
   const [showSteps, setShowSteps] = useState(true);
-  const [selectedBoosters, setSelectedBoosters] = useState([]);
+  const [selectedExtras, setSelectedExtras] = useState([]);
   const [showMeasurements, setShowMeasurements] = useState(true);
 
-  const toggleBooster = (id) => {
-    setSelectedBoosters((prev) =>
+  const toggleExtra = (id) => {
+    setSelectedExtras((prev) =>
       prev.includes(id) ? prev.filter((b) => b !== id) : [...prev, id]
     );
   };
 
   const renderStepText = (step) => {
     let text = step.text;
-    step.ingredients.forEach((ing) => {
-      const regex = new RegExp(`(${ing.name})`, 'gi');
-      const replacement =
-        ing.amount && showMeasurements
+    const ingredientMap = Object.fromEntries(
+      recipe.ingredients.map((ing) => [ing.name, ing])
+    );
+
+    step.ingredients.forEach((ingName) => {
+      const ing = ingredientMap[ingName];
+      if (ing) {
+        const regex = new RegExp(`{${ingName}}`, 'g');
+        const replacement = showMeasurements
           ? `<span class="border-b-2 border-orange-200">${ing.name}</span><span class="text-orange-900/40 mx-1">·</span><span class="text-orange-900/40">${ing.amount}</span>`
           : `<span class="border-b-2 border-orange-200">${ing.name}</span>`;
-      text = text.replace(regex, replacement);
+        text = text.replace(regex, replacement);
+      }
     });
+
+    // Replace newlines with <br/> tags
+    text = text.replace(/\n/g, '<br/>');
     return text;
   };
 
-  const getStepBoosters = (stepId) => {
+  const getStepExtras = (stepId) => {
     return recipe.boosters.filter(
-      (booster) =>
-        booster.addAtStep === stepId && selectedBoosters.includes(booster.id)
+      (extra) => extra.addAtStep === stepId && selectedExtras.includes(extra.id)
     );
   };
+
+  const garnishItems = recipe.boosters.filter(
+    (extra) => extra.addAtStep === 'finish' && selectedExtras.includes(extra.id)
+  );
 
   return (
     <div className="border rounded">
@@ -67,42 +77,55 @@ const Recipe = ({ recipe }) => {
             onToggle={() => setShowIngredients(!showIngredients)}
           />
           {showIngredients && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-gray-600 ml-7">
-              {recipe.ingredients.map((ing, idx) => (
-                <div key={idx} className="flex gap-2">
-                  <span className="border-b-2 border-orange-200">
-                    {ing.name}
-                  </span>
-                  <span className="text-orange-900/40 mx-1">·</span>
-                  <span>{ing.amount}</span>
-                </div>
-              ))}
+            <div className="space-y-2 text-gray-600 ml-7">
+              {/* Main Ingredients */}
+              {recipe.ingredients
+                .filter((ing) => ing.isMainIngredient)
+                .map((ing, idx) => (
+                  <div key={idx} className="flex gap-2">
+                    <span>{ing.name}</span>
+                    <span className="text-orange-900/40 mx-1">·</span>
+                    <span className="text-orange-900/40">{ing.amount}</span>
+                  </div>
+                ))}
+              {/* Separator */}
+              <div className="h-4" />
+              {/* Supplementary Ingredients */}
+              {recipe.ingredients
+                .filter((ing) => !ing.isMainIngredient)
+                .map((ing, idx) => (
+                  <div key={idx} className="flex gap-2">
+                    <span>{ing.name}</span>
+                    <span className="text-orange-900/40 mx-1">·</span>
+                    <span className="text-orange-900/40">{ing.amount}</span>
+                  </div>
+                ))}
             </div>
           )}
         </div>
 
-        {/* Optional Section */}
+        {/* Optional Extras Section */}
         <div>
           <SectionHeader
-            title="Optional"
+            title="Optional Extras"
             isOpen={showOptional}
             onToggle={() => setShowOptional(!showOptional)}
           />
           {showOptional && (
             <div className="flex flex-wrap gap-2 ml-7">
-              {recipe.boosters.map((booster) => (
+              {recipe.boosters.map((extra) => (
                 <button
-                  key={booster.id}
-                  onClick={() => toggleBooster(booster.id)}
+                  key={extra.id}
+                  onClick={() => toggleExtra(extra.id)}
                   className={`group px-4 py-2 rounded border transition-colors relative
                     ${
-                      selectedBoosters.includes(booster.id)
+                      selectedExtras.includes(extra.id)
                         ? 'bg-orange-50 text-orange-900 border-orange-200'
                         : 'bg-white text-gray-700 border-gray-200 hover:bg-gray-50'
                     }`}
                 >
                   <span className="flex items-center gap-2">
-                    {selectedBoosters.includes(booster.id) ? (
+                    {selectedExtras.includes(extra.id) ? (
                       <Minus size={16} className="text-orange-900/60" />
                     ) : (
                       <Plus
@@ -110,7 +133,7 @@ const Recipe = ({ recipe }) => {
                         className="opacity-40 group-hover:opacity-100"
                       />
                     )}
-                    {booster.name}
+                    {extra.name}
                   </span>
                 </button>
               ))}
@@ -144,23 +167,46 @@ const Recipe = ({ recipe }) => {
           {showSteps && (
             <ol className="space-y-4 ml-7">
               {recipe.steps.map((step, idx) => (
-                <li key={step.id} className="p-4 border rounded">
-                  <div
-                    className="text-lg"
-                    dangerouslySetInnerHTML={{
-                      __html: `${idx + 1}. ${renderStepText(step)}`,
-                    }}
-                  />
-                  {getStepBoosters(step.id).map((booster) => (
+                <li key={step.id} className="relative">
+                  <div className="absolute left-[-20px] top-4 text-orange-900 font-medium text-sm">
+                    {idx + 1}
+                  </div>
+                  <div className="p-4 border rounded">
                     <div
-                      key={booster.id}
-                      className="ml-6 mt-2 p-3 bg-orange-50 text-orange-900 border border-orange-100 rounded"
-                    >
-                      + {booster.instruction}
-                    </div>
-                  ))}
+                      className="text-lg"
+                      dangerouslySetInnerHTML={{
+                        __html: renderStepText(step),
+                      }}
+                    />
+                    {getStepExtras(step.id).map((extra) => (
+                      <div
+                        key={extra.id}
+                        className="mt-2 p-3 bg-orange-50 text-orange-900 border border-orange-100 rounded"
+                      >
+                        + {extra.instruction}
+                      </div>
+                    ))}
+                  </div>
                 </li>
               ))}
+              {garnishItems.length > 0 && (
+                <li className="relative">
+                  <div className="absolute left-[-20px] top-4 text-orange-900 font-medium text-sm">
+                    {recipe.steps.length + 1}
+                  </div>
+                  <div className="p-4 border rounded">
+                    <div className="text-lg">Add the finishing touches</div>
+                    {garnishItems.map((extra) => (
+                      <div
+                        key={extra.id}
+                        className="mt-2 p-3 bg-orange-50 text-orange-900 border border-orange-100 rounded"
+                      >
+                        + {extra.instruction}
+                      </div>
+                    ))}
+                  </div>
+                </li>
+              )}
             </ol>
           )}
         </div>

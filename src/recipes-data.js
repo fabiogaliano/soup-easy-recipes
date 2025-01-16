@@ -1,47 +1,55 @@
 const butternutRecipe = {
   id: "butternut",
+  favorite: true,
   title: "Butternut Squash Soup",
   time: "40",
   ingredients: [
-    { name: "butternut squash", amount: "1 (1.2kg)" },
-    { name: "onions", amount: "2" },
-    { name: "garlic", amount: "1 head" },
-    { name: "olive oil", amount: "3-4 tbsp" },
-    { name: "water", amount: "1.5L" },
-    { name: "salt", amount: "to taste" },
-    { name: "pepper", amount: "to taste" },
+    { name: "butternut squash", amount: "1 (1.2kg)", isMainIngredient: true },
+    { name: "onions", amount: "2", isMainIngredient: true },
+    { name: "garlic", amount: "5 cloves (or as needed)", isMainIngredient: true },
+    { name: "olive oil", amount: "3-4 tbsp", isMainIngredient: false },
+    { name: "water", amount: "1.5L", isMainIngredient: false },
+    { name: "salt", amount: "to taste", isMainIngredient: false },
+    { name: "pepper", amount: "to taste", isMainIngredient: false },
   ],
   steps: [
     {
       id: "prep",
-      text: "Cut squash into cubes, quarter onions",
-      ingredients: [
-        { name: "butternut squash", amount: "1.2kg" },
-        { name: "onions", amount: "2" },
-      ],
+      text: "Cut {butternut squash} into cubes, quarter {onions}",
+      ingredients: ["butternut squash", "onions"],
+    },
+    {
+      id: "prep",
+      text: "Trim the ends of {garlic} off; can roast with peel on.",
+      ingredients: ["garlic"],
+    },
+    {
+      id: "prep",
+      text: "Place all vegetables on a tray.\nSeason with {olive oil}, {salt} and {pepper}.",
+      ingredients: ["olive oil", "salt", "pepper"],
     },
     {
       id: "roast",
-      text: "Roast at 180°C for 40 min",
+      text: "Roast at 200°C for 30 min",
       ingredients: [],
     },
     {
       id: "blend",
-      text: "Add hot water and blend",
-      ingredients: [{ name: "water", amount: "1.5L" }],
+      text: "Add {water} and blend",
+      ingredients: ["water"],
     },
   ],
   boosters: [
     {
       id: "chickpeas",
       name: "Chickpeas",
-      instruction: "Add drained chickpeas to roasting tray",
+      instruction: "Rinse and roast or add directly, after blending",
       addAtStep: "roast",
     },
     {
       id: "spinach",
       name: "Spinach",
-      instruction: "Add spinach while blending",
+      instruction: "Add spinach while or after blending",
       addAtStep: "blend",
     },
   ],
@@ -49,26 +57,44 @@ const butternutRecipe = {
 
 const tomatoRecipe = {
   id: "tomato",
+  favorite: false,
   title: "Tomato & Bell Pepper Soup",
   time: "30",
   ingredients: [
-    { name: "tomatoes", amount: "8 large" },
-    { name: "bell peppers", amount: "3" },
-    { name: "onions", amount: "2" },
+    { name: "tomatoes", amount: "8 large", isMainIngredient: true },
+    { name: "bell peppers", amount: "3", isMainIngredient: true },
+    { name: "onions", amount: "2", isMainIngredient: true },
+    { name: "garlic", amount: "5 cloves (or as needed)", isMainIngredient: true },
+    { name: "olive oil", amount: "3-4 tbsp", isMainIngredient: false },
+    { name: "water", amount: "1.5L", isMainIngredient: false },
+    { name: "salt", amount: "to taste", isMainIngredient: false },
+    { name: "pepper", amount: "to taste", isMainIngredient: false },
   ],
   steps: [
     {
       id: "prep",
-      text: "Quarter tomatoes and peppers",
-      ingredients: [
-        { name: "tomatoes", amount: "8" },
-        { name: "bell peppers", amount: "3" },
-      ],
+      text: "Quarter {tomatoes}, {bell peppers} and {onions}.",
+      ingredients: ["tomatoes", "bell peppers", "onions"],
+    },
+    {
+      id: "prep",
+      text: "Trim the ends of {garlic} off; can roast with peel on.",
+      ingredients: ["garlic"],
+    },
+    {
+      id: "prep",
+      text: "Place all vegetables on a tray.\nSeason with {olive oil}, {salt} and {pepper}.",
+      ingredients: ["olive oil", "salt", "pepper"],
     },
     {
       id: "roast",
       text: "Roast at 200°C for 30 min",
       ingredients: [],
+    },
+    {
+      id: "blend",
+      text: "Add {water} and blend",
+      ingredients: ["water"],
     },
   ],
   boosters: [
@@ -78,6 +104,12 @@ const tomatoRecipe = {
       instruction: "Add chunked carrots to roasting tray",
       addAtStep: "roast",
     },
+    {
+      id: "lentils",
+      name: "Lentils",
+      instruction: "Add after blending",
+      addAtStep: "blend",
+    },
   ],
 };
 
@@ -86,40 +118,30 @@ const beetRecipe = {
   title: "Beet & Carrot Soup",
   time: "40",
   ingredients: [
-    { name: "beets", amount: "4 medium (500g)" },
-    { name: "carrots", amount: "6 large (500g)" },
-    { name: "onions", amount: "2" },
-    { name: "garlic", amount: "1 head" },
-    { name: "olive oil", amount: "3-4 tbsp" },
-    { name: "water", amount: "1.5L" },
-    { name: "salt", amount: "to taste" },
-    { name: "pepper", amount: "to taste" },
+    { name: "beets", amount: "4 medium (500g)", isMainIngredient: true },
+    { name: "carrots", amount: "6 large (500g)", isMainIngredient: true },
+    { name: "onions", amount: "2", isMainIngredient: true },
+    { name: "garlic", amount: "1 head", isMainIngredient: false },
+    { name: "olive oil", amount: "3-4 tbsp", isMainIngredient: false },
+    { name: "water", amount: "1.5L", isMainIngredient: false },
+    { name: "salt", amount: "to taste", isMainIngredient: false },
+    { name: "pepper", amount: "to taste", isMainIngredient: false },
   ],
   steps: [
     {
       id: "prep",
-      text: "Cut beets and carrots into chunks",
-      ingredients: [
-        { name: "beets", amount: "500g" },
-        { name: "carrots", amount: "500g" },
-      ],
+      text: "Cut {beets} and {carrots} into chunks",
+      ingredients: ["beets", "carrots"],
     },
     {
       id: "add",
-      text: "Quarter onions, add garlic head",
-      ingredients: [
-        { name: "onions", amount: "2" },
-        { name: "garlic", amount: "1 head" },
-      ],
+      text: "Quarter {onions}, add {garlic}",
+      ingredients: ["onions", "garlic"],
     },
     {
       id: "season",
-      text: "Season with olive oil, salt, pepper",
-      ingredients: [
-        { name: "olive oil", amount: "3-4 tbsp" },
-        { name: "salt", amount: "" },
-        { name: "pepper", amount: "" },
-      ],
+      text: "Season with {olive oil}, {salt}, {pepper}",
+      ingredients: ["olive oil", "salt", "pepper"],
     },
     {
       id: "roast",
@@ -128,8 +150,8 @@ const beetRecipe = {
     },
     {
       id: "blend",
-      text: "Add hot water and blend until smooth",
-      ingredients: [{ name: "water", amount: "1.5L" }],
+      text: "Add {water} and blend until smooth",
+      ingredients: ["water"],
     },
   ],
   boosters: [
@@ -155,6 +177,6 @@ const beetRecipe = {
   ],
 }
 
-const recipesData = [butternutRecipe, tomatoRecipe, beetRecipe];
+const recipesData = [butternutRecipe, tomatoRecipe];
 
 export default recipesData;
