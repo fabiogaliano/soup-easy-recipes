@@ -95,13 +95,6 @@ const tomatoRecipe = {
       id: "blend",
       text: "Add {water} and blend",
       ingredients: ["water"],
-      media: [
-        {
-          type: "video",
-          url: "https://example.com/blending-soup.mp4",
-          alt: "Blending the soup"
-        }
-      ]
     },
   ],
   boosters: [
