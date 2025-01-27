@@ -7,13 +7,13 @@ function App() {
   const [selectedRecipe, setSelectedRecipe] = useState(null);
 
   return (
-    <div className="max-w-xl mx-auto p-4">
+    <div className="max-w-4xl mx-auto px-4 py-6">
       {selectedRecipe ? (
         <div>
-          <div className="border-b pb-6 mb-6">
+          <div className="mb-12">
             <button
               onClick={() => setSelectedRecipe(null)}
-              className="inline-flex items-center gap-2 p-2 text-orange-900 group"
+              className="inline-flex items-center gap-2 text-orange-900 group -ml-1"
             >
               <ChevronLeft
                 size={20}
@@ -33,7 +33,7 @@ function App() {
             <button
               key={recipe.id}
               onClick={() => setSelectedRecipe(recipe)}
-              className={`w-full p-6 border rounded text-left transition-all duration-200
+              className={`w-full px-4 py-5 border rounded text-left transition-all duration-200
                        hover:border-orange-200 hover:shadow-sm group
                        ${recipe.favorite ? 'border-l-4 border-l-orange-200' : ''}`}
             >
